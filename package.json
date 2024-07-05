@@ -9,9 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "globalize": "^1.7.0",
+    "next": "14.2.4",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.4"
+    "react-icons": "^5.2.1"
   },
   "devDependencies": {
     "eslint": "^8",
