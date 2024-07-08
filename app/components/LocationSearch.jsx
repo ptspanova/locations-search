@@ -1,6 +1,8 @@
 'use client'
 
-import { useEffect, useState } from "react";
+import {useEffect, useMemo, useState} from "react";
+import debounce from "lodash.debounce";
+
 
 const LocationsSearch = () => {
     const [locations, setLocations] = useState([]);
@@ -30,19 +32,15 @@ const LocationsSearch = () => {
 
     useEffect(() => {
         fetchLocations();
-    }, []);
-
-    useEffect(() => {
         fetchUserLocations();
+
     }, []);
 
-    useEffect(() => {
-        if (locations && userLocation) {
-            locations.forEach((location) => closestLocation(userLocation, location));
-        }
-    }, [locations, userLocation]);
 
     const handleSearch = (searchTerm) => {
+        if (searchTerm === '') { setFilteredLocations([]) }
+
+
         searchTerm = searchTerm.toLowerCase();
 
         const filterBySearch = locations.filter((location) =>
@@ -50,7 +48,6 @@ const LocationsSearch = () => {
         );
         setFilteredLocations(filterBySearch);
 
-        if (searchTerm === '') { setFilteredLocations([]) }
     }
 
     const  closestLocation = (targetLocation, locationData) => {
@@ -83,6 +80,17 @@ const LocationsSearch = () => {
         return 0
     }
 
+
+    const debouncedResults = useMemo(() => {
+        return debounce(handleSearch, 1000);
+    }, [locations]);
+
+    useEffect(() => {
+        return () => {
+            debouncedResults.cancel();
+        };
+    }, [debouncedResults]);
+
     return (
         <>
             <div style={{display: "flex", flexDirection: "column", alignItems: "center", gap: 5, marginTop: "300px"}}>
@@ -99,7 +107,7 @@ const LocationsSearch = () => {
                         <h1>Search for location</h1>
                         <input
                             placeholder={"Search for location"}
-                            onChange={(event) => handleSearch(event.target.value)}
+                            onChange={(e) => debouncedResults(e.target.value)}
                         />
                     </div>
                     <div>
