@@ -38,8 +38,9 @@ const LocationsSearch = () => {
 
 
     const handleSearch = (searchTerm) => {
-        if (searchTerm === '') { setFilteredLocations([]) }
-
+        if(searchTerm === '') {
+            fetchLocations()
+        }
 
         searchTerm = searchTerm.toLowerCase();
 
@@ -48,6 +49,9 @@ const LocationsSearch = () => {
         );
         setFilteredLocations(filterBySearch);
 
+        if (searchTerm === '') {
+            setFilteredLocations([])
+        }
     }
 
     const  closestLocation = (targetLocation, locationData) => {
